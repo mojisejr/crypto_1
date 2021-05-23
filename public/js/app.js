@@ -39,29 +39,42 @@ const controlWebSocket = () => {
   ws.onopen = () => {
     symbolSettingView.renderSelector(symbols);
   };
-  ws.onmessage = (message) => {
+  ws.onmessage = async (message) => {
     //4 receive and update state,
-    model.updatePriceFromStream(message);
-    const price = model.getPrice();
+    await model.updatePriceFromStream(message);
+    const price = await model.getPrice();
     if (!price) return;
     //5 render price box
     symbolPriceView.render(price);
+    model.checkTPSL(price);
+    model.checkSupportResistant(price);
   };
-  ws.onclose = () => {};
+  ws.onclose = () => {
+    //on auto close will be reconnect the ws
+    if (model.state.wsClose == false) {
+      console.log("connection closed... reconnect in 3 sec");
+      setTimeout(() => {
+        console.log("connected");
+        controlWebSocket();
+      }, 3000);
+    }
+  };
   ws.onerror = (error) => {};
 };
 
-const controlUpdateSetting = (settingData) => {
-  if (!settingData) {
+const controlUpdateSetting = (tpsl, suprst) => {
+  if (!tpsl || !suprst) {
     console.log("error setting data cannot be null or undefined");
     return;
   }
-  model.updateEntryPointState(settingData);
+  model.updateEntryPointState(tpsl);
+  model.updateSupportResistantState(suprst);
 };
 
 const controlWebSocketDisconnect = () => {
   const ws = model.getWebSocketInstance();
   if (!ws) return;
+  model.state.wsClose = true;
   ws.close();
 };
 

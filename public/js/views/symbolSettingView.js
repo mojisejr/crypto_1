@@ -36,6 +36,7 @@ export class SymbolSettingView {
     this.parentElement
       .querySelector(".btn-update-setting")
       .addEventListener("click", () => {
+        //1 data prepairing
         const formData = {
           symbol: this.getData(),
           entries: this.inputEntryPoint.value,
@@ -43,12 +44,21 @@ export class SymbolSettingView {
           supportPrice: this.inputSupportPrice.value,
           resistantPrice: this.inputResistantPrice.value,
         };
-        const settingObject = createSettingObject(formData);
-        handler(settingObject);
+        //2 object creation
+        const [entries, suprst] = createSettingObject(formData);
+        //3 send to controller
+        handler(entries, suprst);
+        this._clearInput();
       });
   }
   _clearSelector() {
     this.parentElement.querySelector(".symbol-selector").innerHTML = "";
+  }
+  _clearInput() {
+    this.inputEntryPoint.value = "";
+    this.inputPercentTPSL.value = "";
+    this.inputSupportPrice.value = "";
+    this.inputResistantPrice.value = "";
   }
 }
 

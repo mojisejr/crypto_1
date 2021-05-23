@@ -14,7 +14,7 @@ export const createWebSocketUrl = (url, symbols) => {
 };
 
 export const createPriceData = (stream) => {
-  const parsedJSON = JSON.parse(stream.data);
+  const parsedJSON = streamDataValidator(stream.data);
   if (!parsedJSON) {
     return;
   }
@@ -25,11 +25,18 @@ export const createPriceData = (stream) => {
   return dataObject;
 };
 
+const streamDataValidator = (streamData) => {
+  //fixed json pasing error
+  if (streamData.startsWith("{") && streamData.endsWith("}")) {
+    return JSON.parse(streamData);
+  }
+  return;
+};
+
 export const createSettingObject = (formData) => {
-  console.log(formData);
   const entriesPoint = entryPointStrToArray(formData.entries);
-  return entriesPoint.map((ent) => {
-    //1 parse entry point to float
+  const entries = entriesPoint.map((ent) => {
+    //1 parse entry point, support, resist to float
     const entry = parseFloat(ent);
     //2 calculate TP/SL price
     const tpPrice = entry + entry * parseFloat(formData.percentTPSL);
@@ -44,6 +51,16 @@ export const createSettingObject = (formData) => {
       isSl: false,
     };
   });
+  const support = parseFloat(formData.supportPrice);
+  const resistant = parseFloat(formData.resistantPrice);
+  const suprst = {
+    symbol: formData.symbol,
+    support,
+    resistant,
+    up: false,
+    down: false,
+  };
+  return [entries, suprst];
 };
 
 const entryPointStrToArray = (entryPoints) => {

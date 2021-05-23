@@ -9,6 +9,8 @@ export const state = {
   supRstPoints: [],
   socketEndpoint: "wss://api.bitkub.com/websocket-api/",
   ws: null,
+  notifyMesssage: "",
+  wsClose: false,
 };
 
 const databaseUrl = "http://localhost:5234";
@@ -43,7 +45,9 @@ export const isStreaming = (symbol) => {
 export const updatePriceFromStream = (stream) => {
   const priceData = createPriceData(stream);
   if (!priceData) return;
-  state.currentPrices[priceData.symbol] = priceData;
+  return new Promise((resolve, reject) => {
+    resolve((state.currentPrices[priceData.symbol] = priceData));
+  });
   // console.log(state.currentPrices);
 };
 
@@ -52,12 +56,85 @@ export const updateEntryPointState = (entryPointToUpdate) => {
     return;
   }
   state.entryPoints.push(...entryPointToUpdate);
-  console.log(state.entryPoints);
+  console.log("entry point => ", state.entryPoints);
+};
+
+export const updateSupportResistantState = (supportResistantToUpdate) => {
+  if (!supportResistantToUpdate) {
+    return;
+  }
+  state.supRstPoints.push(supportResistantToUpdate);
+  console.log("sprst point=>", state.supRstPoints);
+};
+
+export const checkTPSL = (currentPrice) => {
+  if (state.entryPoints.length <= 0) return;
+  state.entryPoints.forEach(async (symbol, index) => {
+    const price = currentPrice[symbol.symbol].price;
+    if (price >= symbol.tp && symbol.isTp == false && symbol.isSL == false) {
+      state.entryPoints[index].isTp = true;
+      state.notifyMesssage = `${symbol.symbol.toUpperCase()} tp ที่ราคา ฿${price} ตำแหน่ง tp ที่ตั้งไว้ ฿${
+        symbol.tp
+      }`;
+      await sendNotification(state.notifyMesssage);
+      console.log("tp", state.entryPoints);
+    }
+    if (price <= symbol.sl && symbol.isSl == false && symbol.isTp == false) {
+      state.entryPoints[index].isSl = true;
+      state.notifyMesssage = `${symbol.symbol.toUpperCase()} sl ที่ราคา ฿${price} ตำแหน่ง sl ที่ตั้งไว้ ฿${
+        symbol.sl
+      }`;
+      await sendNotification(state.notifyMesssage);
+      console.log("sl", state.entryPoints);
+    }
+  });
+};
+
+export const checkSupportResistant = (currentPrice) => {
+  if (state.supRstPoints.length <= 0) return;
+  state.supRstPoints.forEach(async (symbol, index) => {
+    const price = currentPrice[symbol.symbol].price;
+    if (price >= symbol.resistant && symbol.up == false) {
+      state.supRstPoints[index].up = true;
+      state.notifyMesssage = `${symbol.symbol.toUpperCase()} break แนวต้าน ฿${
+        symbol.resistant
+      } ไปที่ราคา ฿${price}`;
+      await sendNotification(state.notifyMesssage);
+      console.log("break แนวต้าน", state.supRstPoints);
+    } else if (price >= symbol.resistant && symbol.up == true) {
+      return;
+    } else {
+      state.supRstPoints[index].up = false;
+    }
+    if (price <= symbol.support && symbol.down == false) {
+      state.supRstPoints[index].down = true;
+      state.notifyMesssage = `${symbol.symbol.toUpperCase()} break แนวรับ ฿${
+        symbol.resistant
+      } ไปที่ราคา ฿${price}`;
+      console.log("break  แนวรับ", state.supRstPoints);
+      await sendNotification(state.notifyMesssage);
+    } else if (price <= symbol.resistant && symbol.down == true) {
+      return;
+    } else {
+      state.supRstPoints[index].down = false;
+    }
+  });
+};
+
+const sendNotification = async (message) => {
+  if (!message) {
+    return;
+  }
+  await axios.post("http://localhost:3000/notify", {
+    message: message,
+  });
 };
 
 export const getPrice = () => {
   if (!state.currentPrices) return;
-  return state.currentPrices;
+  return new Promise((resolve, reject) => {
+    resolve(state.currentPrices);
+  });
 };
 
 export const buildWebSocket = (symbols) => {

@@ -1,0 +1,80 @@
+* {
+  font-size: 30px;
+}
+.margin-bottom-sm {
+  margin-bottom: 5px;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.btn {
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+}
+
+.input {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  width: 99%;
+}
+
+.btn:hover {
+  color: white;
+  background-color: yellowgreen;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+}
+
+.status {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  color: orangered;
+  border-radius: 10px;
+}
+
+.price-container {
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.setting-container {
+  border: 1px solid grey;
+  border-radius: 10px;
+}
+
+/* .control-container {
+  display: flex;
+} */
+
+.price-box {
+  background-image: linear-gradient(to bottom right, greenyellow, orangered);
+  min-width: 45%;
+  border-radius: 10px;
+  margin: 0 0 0.2rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.symbol {
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.price {
+  color: greenyellow;
+}
+
+.selected-symbol-list {
+  list-style: none;
+  display: flex;
+  justify-content: space-evenly;
+}

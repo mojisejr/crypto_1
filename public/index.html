@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>crypto bot @หนวด v.1</title>
+  </head>
+  <body>
+    <div class="form-container margin-bottom-sm">
+      <h2>add symbol menu</h2>
+      <form class="symbol-selector-form">
+        <select id="symbol-list-selector" class="symbol-list-selector"></select>
+        <button type="submit" class="btn btn-set">set</button>
+      </form>
+    </div>
+    <div class="selected-symbol-container">
+      <h2>selected symbols</h2>
+      <ul class="selected-symbol-list"></ul>
+    </div>
+    <div class="menu margin-bottom-sm">
+      <div class="menu-list">
+        <div class="menu-list-item">
+          <button type="button" class="btn btn-run">run</button>
+          <button type="button" class="btn btn-disconnect">disconnect</button>
+          <!-- <button type="button" class="btn-notify-test">notify test</button> -->
+        </div>
+      </div>
+    </div>
+    <div class="status margin-buttom-sm">status</div>
+    <div class="price-container">
+      <!-- <div class="price-box">
+        <div class="symbol">ada</div>
+        <div class="price">63.5</div>
+      </div>
+      <div class="price-box">
+        <div class="symbol">ada</div>
+        <div class="price">63.5</div>
+      </div>
+      <div class="price-box">
+        <div class="symbol">ada</div>
+        <div class="price">63.5</div>
+      </div> -->
+    </div>
+    <div class="control-container">
+      <div class="setting-container">
+        <ul>
+          <li>
+            <div class="setting-box">
+              <div class="label">symbol</div>
+              <select id="symbol-selector" class="symbol-selector"></select>
+            </div>
+          </li>
+          <li>
+            <div class="setting-box">
+              <div class="label">กำหนด entry point</div>
+              <input id="entryPoint" type="text" />
+            </div>
+          </li>
+          <li>
+            <div class="setting-box">
+              <div class="label">%TP/SL</div>
+              <input id="percentTPSL" type="text" />
+            </div>
+          </li>
+          <li>
+            <div class="setting-box">
+              <div class="label">แนวต้าน</div>
+              <input id="resistantPrice" type="text" />
+            </div>
+          </li>
+          <li>
+            <div class="setting-box">
+              <div class="label">แนวรับ</div>
+              <input id="supportPrice" type="text" />
+            </div>
+          </li>
+          <li><button class="btn btn-update-setting">add</button></li>
+        </ul>
+      </div>
+      <!-- <div class="monitor-container">
+        <div class="monitor-box">
+          <button class="btn btn-get-entry">reload</button>
+        </div>
+      </div> -->
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>
